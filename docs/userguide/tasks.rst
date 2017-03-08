@@ -944,7 +944,7 @@ General
 States
 ======
 
-Celery can keep track of the tasks current state. The state also contains the
+Celery can keep track of a task's current state. The state also contains the
 result of a successful task, or the exception and traceback information of a
 failed task.
 
@@ -954,12 +954,12 @@ different strengths and weaknesses (see :ref:`task-result-backends`).
 During its lifetime a task will transition through several possible states,
 and each state may have arbitrary meta-data attached to it. When a task
 moves into a new state the previous state is
-forgotten about, but some transitions can be deducted, (e.g., a task now
-in the :state:`FAILED` state, is implied to have been in the
+forgotten, but some transitions can be deducted, (e.g., a task now
+in the :state:`FAILURE` state is implied to have been in the
 :state:`STARTED` state at some point).
 
 There are also sets of states, like the set of
-:state:`FAILURE_STATES`, and the set of :state:`READY_STATES`.
+:state:`EXCEPTION_STATES` and the set of :state:`READY_STATES`.
 
 The client uses the membership of these sets to decide whether
 the exception should be re-raised (:state:`PROPAGATE_STATES`), or whether
@@ -1062,7 +1062,7 @@ FAILURE
 
 Task execution resulted in failure.
 
-:meta-data: `result` contains the exception occurred, and `traceback`
+:meta-data: `result` contains the exception that occurred, and `traceback`
             contains the backtrace of the stack at the point when the
             exception was raised.
 :propagates: Yes
@@ -1076,7 +1076,7 @@ Task is being retried.
 
 :meta-data: `result` contains the exception that caused the retry,
             and `traceback` contains the backtrace of the stack at the point
-            when the exceptions was raised.
+            when the exception was raised.
 :propagates: No
 
 .. state:: REVOKED
@@ -1093,7 +1093,7 @@ Task has been revoked.
 Custom states
 -------------
 
-You can easily define your own states, all you need is a unique name.
+You can easily define your own states; all you need is a unique name.
 The name of the state is usually an uppercase string. As an example
 you could have a look at the :mod:`abortable tasks <~celery.contrib.abortable>`
 which defines a custom :state:`ABORTED` state.
