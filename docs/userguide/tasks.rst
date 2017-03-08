@@ -1344,10 +1344,10 @@ If you have a task,
             except KeyError:
                 return False
 
-And you route every request to the same process, then it
+and you route every request to the same process, then it
 will keep state between requests.
 
-This can also be useful to cache resources,
+This can also be useful to cache resources.
 For example, a base Task class that caches a database connection:
 
 .. code-block:: python
@@ -1364,7 +1364,7 @@ For example, a base Task class that caches a database connection:
             return self._db
 
 
-that can be added to tasks like this:
+can be added to tasks like this:
 
 .. code-block:: python
 
