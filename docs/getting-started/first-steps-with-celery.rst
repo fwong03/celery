@@ -14,7 +14,7 @@ tools and support you need to run such a system in production.
 
 In this tutorial you'll learn the absolute basics of using Celery.
 
-Learn about;
+Learn about:
 
 - Choosing and installing a message transport (broker).
 - Installing Celery and creating your first task.
@@ -129,7 +129,7 @@ This is only needed to allow names to be generated automatically when the tasks 
 defined in the ``__main__`` module.
 
 The second argument is the broker keyword argument, specifying the URL of the
-message broker you want to use. Here using RabbitMQ (also the default option).
+message broker you want to use. Here we are using RabbitMQ (also the default option).
 
 See :ref:`celerytut-broker` above for more choices --
 for RabbitMQ you can use ``amqp://localhost``, or for Redis you can
@@ -312,15 +312,15 @@ If you're configuring many settings at once you can use ``update``:
         enable_utc=True,
     )
 
-For larger projects using a dedicated configuration module is useful,
-in fact you're discouraged from hard coding
+For larger projects, using a dedicated configuration module is useful.
+In fact, you're discouraged from hard coding
 periodic task intervals and task routing options, as it's much
-better to keep this in a centralized location, and especially for libraries
-it makes it possible for users to control how they want your tasks to behave,
-you can also imagine your SysAdmin making simple changes to the configuration
+better to keep this information in a centralized location. For libraries, this
+makes it possible for users to control how they want tasks to behave;
+imagine your SysAdmin making simple changes to the configuration
 in the event of system trouble.
 
-You can tell your Celery instance to use a configuration module,
+You can tell your Celery instance to use a configuration module
 by calling the :meth:`@config_from_object` method:
 
 .. code-block:: python
@@ -458,8 +458,8 @@ the task id after all).
 4) Make sure the client is configured with the right backend.
 
     If for some reason the client is configured to use a different backend
-    than the worker, you won't be able to receive the result,
-    so make sure the backend is correct by inspecting it:
+    than the worker, you won't be able to receive the result.
+    So, make sure the backend is correct by inspecting it:
 
     .. code-block:: pycon
 
