@@ -1469,7 +1469,7 @@ The :meth:`@task` decorator is responsible for registering your task
 in the applications task registry.
 
 When tasks are sent, no actual function code is sent with it, just the name
-of the task to execute. When the worker then receives the message it can look
+of the task to execute. When the worker then receives the message it will look
 up the name in its task registry to find the execution code.
 
 This means that your workers should always be updated with the same software
@@ -1630,8 +1630,8 @@ The worker processing the task should be as close to the data as
 possible. The best would be to have a copy in memory, the worst would be a
 full transfer from another continent.
 
-If the data is far away, you could try to run another worker at location, or
-if that's not possible - cache often used data, or preload data you know
+If the data is far away, you could try to run another worker at location.
+If that's not possible, cache often used data or preload data you know
 is going to be used.
 
 The easiest way to share data between workers is to use a distributed cache
@@ -1659,10 +1659,10 @@ run in a timely manner.
 The ancient async sayings tells us that “asserting the world is the
 responsibility of the task”. What this means is that the world view may
 have changed since the task was requested, so the task is responsible for
-making sure the world is how it should be;  If you have a task
+making sure the world is how it should be.  If you have a task
 that re-indexes a search engine, and the search engine should only be
-re-indexed at maximum every 5 minutes, then it must be the tasks
-responsibility to assert that, not the callers.
+re-indexed at maximum every 5 minutes, it is the task's responsibility to
+assert that - not the caller's.
 
 Another gotcha is Django model objects. They shouldn't be passed on as
 arguments to tasks. It's almost always better to re-fetch the object from
@@ -1683,7 +1683,7 @@ that automatically expands some abbreviations in it:
         article.body.replace('MyCorp', 'My Corporation')
         article.save()
 
-First, an author creates an article and saves it, then the author
+First, an author creates an article and saves it. Then the author
 clicks on a button that initiates the abbreviation task:
 
 .. code-block:: pycon
@@ -1696,7 +1696,7 @@ In the meantime another author makes changes to the article, so
 when the task is finally run, the body of the article is reverted to the old
 version because the task had the old body in its argument.
 
-Fixing the race condition is easy, just use the article id instead, and
+Fixing the race condition is easy. Just use the article id instead and
 re-fetch the article in the task body:
 
 .. code-block:: python
@@ -1732,11 +1732,11 @@ Let's have a look at another example:
 
 This is a Django view creating an article object in the database,
 then passing the primary key to a task. It uses the `commit_on_success`
-decorator, that will commit the transaction when the view returns, or
+decorator that will commit the transaction when the view returns, or
 roll back if the view raises an exception.
 
 There's a race condition if the task starts executing
-before the transaction has been committed; The database object doesn't exist
+before the transaction has been committed; the database object doesn't exist
 yet!
 
 The solution is to use the ``on_commit`` callback to launch your celery task
