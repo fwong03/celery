@@ -114,10 +114,10 @@ these can be specified as arguments to the decorator:
 
 .. sidebar:: How do I import the task decorator? And what's "app"?
 
-    The task decorator is available on your :class:`@Celery` application instance,
-    if you don't know what this is then please read :ref:`first-steps`.
+    The task decorator is available on your :class:`@Celery` application instance.
+    If you don't know what this is then please read :ref:`first-steps`.
 
-    If you're using Django (see :ref:`django-first-steps`), or you're the author
+    If you're using Django (see :ref:`django-first-steps`) or the author
     of a library then you probably want to use the :func:`@shared_task` decorator:
 
     .. code-block:: python
@@ -186,11 +186,11 @@ Names
 
 Every task must have a unique name.
 
-If no explicit name is provided the task decorator will generate one for you,
-and this name will be based on 1) the module the task is defined in, and 2)
+If no explicit name is provided, the task decorator will generate one for you.
+This name will be based on 1) the module the task is defined in, and 2)
 the name of the task function.
 
-Example setting explicit name:
+Example setting an explicit name:
 
 .. code-block:: pycon
 
@@ -201,8 +201,8 @@ Example setting explicit name:
     >>> add.name
     'sum-of-two-numbers'
 
-A best practice is to use the module name as a name-space,
-this way names won't collide if there's already a task with that name
+A best practice is to use the module name as a name-space.
+This way names won't collide if there's already a task with that name
 defined in another module.
 
 .. code-block:: pycon
@@ -259,9 +259,9 @@ Automatic naming and relative imports
 Relative imports and automatic name generation don't go well together,
 so if you're using relative imports you should set the name explicitly.
 
-For example if the client imports the module ``"myapp.tasks"``
-as ``".tasks"``, and the worker imports the module as ``"myapp.tasks"``,
-the generated names won't match and an :exc:`~@NotRegistered` error will
+For example, if the client imports the module ``"myapp.tasks"``
+as ``".tasks"`` and the worker imports the module as ``"myapp.tasks"``,
+the generated names won't match and a :exc:`~@NotRegistered` error will
 be raised by the worker.
 
 This is also the case when using Django and using ``project.myapp``-style
@@ -282,7 +282,7 @@ so you must make sure you always import the tasks using the same name:
     >>> from myapp.tasks import mytask    # << BAD!!!
 
 The second example will cause the task to be named differently
-since the worker and the client imports the modules under different names:
+since the worker and the client import the modules under different names:
 
 .. code-block:: pycon
 
@@ -312,8 +312,8 @@ New-style relative imports are fine and can be used:
     from .module import foo  # GOOD!
 
 If you want to use Celery with a project already using these patterns
-extensively and you don't have the time to refactor the existing code
-then you can consider specifying the names explicitly instead of relying
+extensively and you don't have the time to refactor the existing code,
+consider specifying the names explicitly instead of relying
 on the automatic naming:
 
 .. code-block:: python
@@ -481,7 +481,7 @@ Logging
 The worker will automatically set up logging for you, or you can
 configure logging manually.
 
-A special logger is available named "celery.task", you can inherit
+A special logger is available named "celery.task". You can inherit
 from this logger to automatically get the task name and unique id as part
 of the logs.
 
@@ -596,10 +596,10 @@ arguments:
 .. warning::
 
     Sensitive information will still be accessible to anyone able
-    to read your task message from the broker, or otherwise able intercept it.
+    to read your task message from the broker or otherwise able intercept it.
 
     For this reason you should probably encrypt your message if it contains
-    sensitive information, or in this example with a credit card number
+    sensitive information. In this example with a credit card number,
     the actual number could be stored encrypted in a secure store that you retrieve
     and decrypt in the task itself.
 
@@ -634,8 +634,8 @@ Here's an example using ``retry``:
 .. note::
 
     The :meth:`Task.retry() <@Task.retry>` call will raise an exception so any
-    code after the retry won't be reached. This is the :exc:`~@Retry`
-    exception, it isn't handled as an error but rather as a semi-predicate
+    code after the retry won't be reached. This is because the :exc:`~@Retry`
+    exception isn't handled as an error but rather as a semi-predicate
     to signify to the worker that the task is to be retried,
     so that it can store the correct state when a result backend is enabled.
 
@@ -645,8 +645,8 @@ Here's an example using ``retry``:
 The bind argument to the task decorator will give access to ``self`` (the
 task type instance).
 
-The ``exc`` method is used to pass exception information that's
-used in logs, and when storing task results.
+The ``exc`` method is used to pass exception information
+used in logs and when storing task results.
 Both the exception and the traceback will
 be available in the task state (if a result backend is enabled).
 
@@ -752,7 +752,7 @@ List of Options
 ===============
 
 The task decorator can take a number of options that change the way
-the task behaves, for example you can set the rate limit for a task
+the task behaves. For example, you can set the rate limit for a task
 using the :attr:`rate_limit` option.
 
 Any keyword argument passed to the task decorator will actually be set
@@ -771,7 +771,7 @@ General
     You can set this name manually, or a name will be
     automatically generated using the module and class name.
 
-    See also :ref:`task-names`.
+    See :ref:`task-names`.
 
 .. attribute:: Task.request
 
@@ -848,10 +848,10 @@ General
     Example: `"100/m"` (hundred tasks a minute). This will enforce a minimum
     delay of 600ms between starting two tasks on the same worker instance.
 
-    Default is the :setting:`task_default_rate_limit` setting:
-    if not specified means rate limiting for tasks is disabled by default.
+    Default is the :setting:`task_default_rate_limit` setting.
+    If this value is not specified this means rate limiting for tasks is disabled by default.
 
-    Note that this is a *per worker instance* rate limit, and not a global
+    Note that this is a *per worker instance* rate limit, not a global
     rate limit. To enforce a global rate limit (e.g., for an API with a
     maximum number of  requests per second), you must restrict to a given
     queue.
@@ -1739,21 +1739,21 @@ There's a race condition if the task starts executing
 before the transaction has been committed; The database object doesn't exist
 yet!
 
-The solution is to use the ``on_commit`` callback to launch your celery task 
+The solution is to use the ``on_commit`` callback to launch your celery task
 once all transactions have been committed successfully.
 
 .. code-block:: python
     from django.db.transaction import on_commit
-    
+
     def create_article(request):
         article = Article.objects.create()
         on_commit(lambda: expand_abbreviations.delay(article.pk))
 
 .. note::
     ``on_commit` is available in Django 1.9 and above, if you are using a
-    version prior to that then the `django-transaction-hooks`_ library 
+    version prior to that then the `django-transaction-hooks`_ library
     adds support for this.
-    
+
 .. _`django-transaction-hooks`: https://github.com/carljm/django-transaction-hooks
 
 .. _task-example:
