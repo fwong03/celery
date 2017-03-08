@@ -39,9 +39,9 @@ as...
 #. We assume that a system administrator deliberately killing the task
    does not want it to automatically restart.
 #. A task that allocates too much memory is in danger of triggering the kernel
-   OOM killer, the same may happen again.
+   OOM killer, and the same may happen again.
 #. A task that always fails when redelivered may cause a high-frequency
-   message loop taking down the system.
+   message loop, taking down the system.
 
 If you really want a task to be redelivered in these scenarios you should
 consider enabling the :setting:`task_reject_on_worker_lost` setting.
@@ -51,7 +51,7 @@ consider enabling the :setting:`task_reject_on_worker_lost` setting.
     A task that blocks indefinitely may eventually stop the worker instance
     from doing any other work.
 
-    If you task does I/O then make sure you add timeouts to these operations,
+    If your task does I/O then make sure you add timeouts to these operations,
     like adding a timeout to a web request using the :pypi:`requests` library:
 
     .. code-block:: python
@@ -66,7 +66,7 @@ consider enabling the :setting:`task_reject_on_worker_lost` setting.
 
     The default prefork pool scheduler is not friendly to long-running tasks,
     so if you have tasks that run for minutes/hours make sure you enable
-    the -Ofair`` command-line argument to the :program:`celery worker`.
+    the `-Ofair` command-line argument to the :program:`celery worker`.
     See :ref:`prefork-pool-prefetch` for more information, and for the
     best performance route long-running and short-running tasks to
     dedicated workers (:ref:`routing-automatic`).
