@@ -639,9 +639,9 @@ specifying the :option:`celery worker -Q` option:
 
     $ celery -A proj worker -Q hipri
 
-You may specify multiple queues by using a comma separated list,
-for example you can make the worker consume from both the default
-queue, and the ``hipri`` queue, where
+You may specify multiple queues by using a comma separated list.
+For example, you can make the worker consume from both the default
+queue and the ``hipri`` queue, where
 the default queue is named ``celery`` for historical reasons:
 
 .. code-block:: console
@@ -651,7 +651,7 @@ the default queue is named ``celery`` for historical reasons:
 The order of the queues doesn't matter as the worker will
 give equal weight to the queues.
 
-To learn more about routing, including taking use of the full
+To learn more about routing, including making use of the full
 power of AMQP routing, see the :ref:`Routing Guide <guide-routing>`.
 
 Remote Control
@@ -710,13 +710,13 @@ to see what the workers are doing:
 
     $ celery -A proj events --dump
 
-or you can start the curses interface:
+Or, you can start the curses interface:
 
 .. code-block:: console
 
     $ celery -A proj events
 
-when you're finished monitoring you can disable events again:
+When you're finished monitoring you can disable events again:
 
 .. code-block:: console
 
@@ -735,9 +735,9 @@ in the :ref:`Monitoring Guide <guide-monitoring>`.
 Timezone
 ========
 
-All times and dates, internally and in messages uses the UTC timezone.
+All times and dates, both internally and in messages, use the UTC timezone.
 
-When the worker receives a message, for example with a countdown set it
+When the worker receives a message, for example with a countdown set, it
 converts that UTC time to local time. If you wish to use
 a different timezone than the system timezone then you must
 configure that using the :setting:`timezone` setting:
@@ -749,12 +749,12 @@ configure that using the :setting:`timezone` setting:
 Optimization
 ============
 
-The default configuration isn't optimized for throughput by default,
-it tries to walk the middle way between many short tasks and fewer long
+The default configuration isn't optimized for throughput by default.
+It tries to walk the middle way between many short tasks and fewer long
 tasks, a compromise between throughput and fair scheduling.
 
 If you have strict fair scheduling requirements, or want to optimize
-for throughput then you should read the :ref:`Optimizing Guide
+for throughput, then you should read the :ref:`Optimizing Guide
 <guide-optimizing>`.
 
 If you're using RabbitMQ then you can install the :pypi:`librabbitmq`
