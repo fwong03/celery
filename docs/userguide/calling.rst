@@ -96,9 +96,9 @@ called `add`, returning the sum of two arguments:
 .. topic:: There's another way…
 
     You'll learn more about this later while reading about the :ref:`Canvas
-    <guide-canvas>`, but :class:`~celery.signature`'s are objects used to pass around
-    the signature of a task invocation, (for example to send it over the
-    network), and they also support the Calling API:
+    <guide-canvas>`, but :class:`~celery.signature`s are objects used to pass around
+    the signature of a task invocation (for example, to send it over the
+    network). They also support the Calling API:
 
     .. code-block:: python
 
@@ -134,11 +134,11 @@ task that adds 16 to the previous result, forming the expression
 :math:`(2 + 2) + 16 = 20`
 
 
-You can also cause a callback to be applied if task raises an exception
+You can also cause a callback to be applied if a task raises an exception
 (*errback*), but this behaves differently from a regular callback
 in that it will be passed the id of the parent task, not the result.
 This is because it may not always be possible to serialize
-the exception raised, and so this way the error callback requires
+the exception raised. Therefore, the error callback requires
 a result backend to be enabled, and the task must retrieve the result
 of the task instead.
 
@@ -153,7 +153,7 @@ This is an example error callback:
         print('Task {0} raised exception: {1!r}\n{2!r}'.format(
               uuid, exc, result.traceback))
 
-it can be added to the task using the ``link_error`` execution
+It can be added to the task using the ``link_error`` execution
 option:
 
 .. code-block:: python
@@ -168,7 +168,7 @@ as a list:
 
     add.apply_async((2, 2), link=[add.s(16), other_task.s()])
 
-The callbacks/errbacks will then be called in order, and all
+The callbacks/errbacks will then be called in order. All
 callbacks will be called with the return value of the parent task
 as a partial argument.
 
@@ -177,7 +177,7 @@ as a partial argument.
 On message
 ==========
 
-Celery supports catching all states changes by setting on_message callback.
+Celery supports catching all state changes by setting on_message callback.
 
 For example for long-running tasks to send task progress you can do something like this:
 
@@ -239,14 +239,14 @@ a shortcut to set ETA by seconds into the future.
 
 The task is guaranteed to be executed at some time *after* the
 specified date and time, but not necessarily at that exact time.
-Possible reasons for broken deadlines may include many items waiting
-in the queue, or heavy network latency. To make sure your tasks
+Possible reasons for broken deadlines include many items waiting
+in the queue or heavy network latency. To make sure your tasks
 are executed in a timely manner you should monitor the queue for congestion. Use
-Munin, or similar tools, to receive alerts, so appropriate action can be
+Munin or similar tools to receive alerts so appropriate action can be
 taken to ease the workload. See :ref:`monitoring-munin`.
 
 While `countdown` is an integer, `eta` must be a :class:`~datetime.datetime`
-object, specifying an exact date and time (including millisecond precision,
+object, specifying an exact date and time (including millisecond precision
 and timezone information):
 
 .. code-block:: pycon
@@ -310,8 +310,9 @@ and can contain the following keys:
 
 - `max_retries`
 
-    Maximum number of retries before giving up, in this case the
-    exception that caused the retry to fail will be raised.
+    Maximum number of retries before giving up. If the task reaches the maximum
+    number of retries and the last retry failed, the exception that caused
+    the last retry to fail will be raised.
 
     A value of :const:`None` means it will retry forever.
 
@@ -332,7 +333,7 @@ and can contain the following keys:
     Maximum number of seconds (float or integer) to wait between
     retries. Default is 0.2.
 
-For example, the default policy correlates to:
+For example, take the following retry policy:
 
 .. code-block:: python
 
@@ -343,17 +344,18 @@ For example, the default policy correlates to:
         'interval_max': 0.2,
     })
 
-the maximum time spent retrying will be 0.4 seconds. It's set relatively
+The above default policy correlates to a maximum time spent retrying of 0.4
+seconds. It's set relatively
 short by default because a connection failure could lead to a retry pile effect
-if the broker connection is down -- For example, many web server processes waiting
-to retry, blocking other incoming requests.
+if the broker connection is down -- e.g., many web server processes waiting
+to retry and blocking other incoming requests.
 
 .. _calling-connection-errors:
 
 Connection Error Handling
 =========================
 
-When you send a task and the message transport connection is lost, or
+When you send a task and the message transport connection is lost or
 the connection cannot be initiated, an :exc:`~kombu.exceptions.OperationalError`
 error will be raised:
 
@@ -382,9 +384,10 @@ error will be raised:
       kombu.exceptions.OperationalError: [Errno 61] Connection refused
 
 If you have :ref:`retries <calling-retry>` enabled this will only happen after
-retries are exhausted, or when disabled immediately.
+the maximum number of retries are exhausted. If retry is disabled the exception
+will be raised immediately.
 
-You can handle this error too:
+You can handle this error, too:
 
 .. code-block:: pycon
 
@@ -403,13 +406,13 @@ Serializers
 
 .. sidebar::  Security
 
-    The pickle module allows for execution of arbitrary functions,
-    please see the :ref:`security guide <guide-security>`.
+    The pickle module allows for execution of arbitrary functions.
+    Please see the :ref:`security guide <guide-security>`.
 
     Celery also comes with a special serializer that uses
     cryptography to sign your messages.
 
-Data transferred between clients and workers needs to be serialized,
+Data transferred between clients and workers need to be serialized,
 so every message in Celery has a ``content_type`` header that
 describes the serialization method used to encode it.
 
@@ -418,8 +421,8 @@ change this using the :setting:`task_serializer` setting,
 or for each individual task, or even per message.
 
 There's built-in support for `JSON`, :mod:`pickle`, `YAML`
-and ``msgpack``, and you can also add your own custom serializers by registering
-them into the Kombu serializer registry
+and ``msgpack``. You can also add your own custom serializers by registering
+them in the Kombu serializer registry.
 
 .. seealso::
 
@@ -430,7 +433,7 @@ Each option has its advantages and disadvantages.
 
 json -- JSON is supported in many programming languages, is now
     a standard part of Python (since 2.6), and is fairly fast to decode
-    using the modern Python libraries, such as :pypi:`simplejson`.
+    using modern Python libraries such as :pypi:`simplejson`.
 
     The primary disadvantage to JSON is that it limits you to the following
     data types: strings, Unicode, floats, Boolean, dictionaries, and lists.
@@ -447,7 +450,7 @@ json -- JSON is supported in many programming languages, is now
     See http://json.org for more information.
 
 pickle -- If you have no desire to support any language other than
-    Python, then using the pickle encoding will gain you the support of
+    Python, then using pickle encoding will gain you the support of
     all built-in Python data types (except class instances), smaller
     messages when sending binary files, and a slight speedup over JSON
     processing.
@@ -472,7 +475,7 @@ msgpack -- msgpack is a binary serialization format that's closer to JSON
 
     See http://msgpack.org/ for more information.
 
-The encoding used is available as a message header, so the worker knows how to
+The encoding used is available as a message header so the worker knows how to
 deserialize any task. If you use a custom serializer, this serializer must
 be available for the worker.
 
@@ -495,7 +498,7 @@ Example setting a custom serializer for a single task invocation:
 Compression
 ===========
 
-Celery can compress the messages using either *gzip*, or *bzip2*.
+Celery can compress messages using either *gzip* or *bzip2*.
 You can also create your own compression schemes and register
 them in the :func:`kombu compression registry <kombu.compression.register>`.
 
@@ -525,7 +528,7 @@ Connections
 
     See the :setting:`broker_pool_limit` setting for more information.
 
-You can handle the connection manually by creating a
+You can handle a connection manually by creating a
 publisher:
 
 .. code-block:: python
